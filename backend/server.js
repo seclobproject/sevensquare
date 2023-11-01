@@ -4,6 +4,7 @@ import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 const app = express();
 
 import userRoutes from './routes/userRoutes.js';
+import packageRoutes from './routes/packageRoutes.js';
 
 //dotenv
 import dotenv from "dotenv";
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/packages", packageRoutes);
 // API Points
 
 app.use(errorHandler);

@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
 // Register new user
+
 router.post(
   "/",
   asyncHandler(async (req, res) => {
@@ -49,6 +50,7 @@ router.post(
 );
 
 // Login user
+
 router.post(
   "/login",
   asyncHandler(async (req, res) => {
@@ -79,6 +81,8 @@ router.post(
     }
   })
 );
+
+// Logout user
 
 router.post(
   "/logout",
