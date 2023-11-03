@@ -139,6 +139,7 @@ router.post(
   "/verify-user-payment",
   protect,
   asyncHandler(async (req, res) => {
+    
     const sponserUserId = req.user._id;
 
     const { userId } = req.body;
@@ -171,47 +172,47 @@ router.post(
   "/split-commission",
   protect,
   asyncHandler(async (req, res) => {
-    const userId = req.user._id;
 
-    const { childId } = req.body;
+    const sponserUserId = req.user._id;
 
-    const sponseredUsers = await User.findById(userId).populate({
+    const { userId } = req.body;
+
+    const sponseredUsers = await User.findById(sponserUserId).populate({
       path: "children",
     });
 
     const theUser = sponseredUsers.children.find((child) =>
-      child._id.equals(childId)
+      child._id.equals(userId)
     );
+
 
     // Get the plan/package selected by the user
     const packageSelected = await theUser.populate({
       path: "packageChosen",
     });
 
-    
+    const packageAmount = packageSelected.packageChosen.amount;
     // Get the plan/package selected by the user
-
-
 
     const commissionRates = [25, 8, 7, 5, 4, 3, 2, 1];
 
-    function calculateCommissions(amount) {
-      const commissions = [];
-      for (let level = 0; level < commissionRates.length; level++) {
-        const commissionRate = commissionRates[level];
-        const commission = (commissionRate / 100) * amount;
-        commissions.push({ level, commission });
-      }
-      return commissions;
-    }
+    // function calculateCommissions(amount) {
+    //   const commissions = [];
+    //   for (let level = 0; level < commissionRates.length; level++) {
+    //     const commissionRate = commissionRates[level];
+    //     const commission = (commissionRate / 100) * packageAmount;
+    //     commissions.push({ level, commission });
+    //   }
+    //   return commissions;
+    // }
 
-    const paidAmount = 1000;
-    const commissions = calculateCommissions(paidAmount);
+    // const paidAmount = 1000;
+    // const commissions = calculateCommissions(paidAmount);
 
-    console.log("Commissions:");
-    commissions.forEach(({ level, commission }) => {
-      console.log(`Level ${level + 1}: ${commission} rupees`);
-    });
+    // console.log("Commissions:");
+    // commissions.forEach(({ level, commission }) => {
+    //   console.log(`Level ${level + 1}: ${commission} rupees`);
+    // });
   })
 );
 
