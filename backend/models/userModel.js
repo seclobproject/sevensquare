@@ -3,9 +3,9 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    sponser: {
+      type: String,
+      unique: true
     },
     name: {
       type: String,
@@ -15,6 +15,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+    },
+    phone: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    packageChosen: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Package'
     },
     password: {
       type: String,
@@ -28,6 +41,16 @@ const userSchema = new mongoose.Schema(
     isSuperAdmin: {
         type: Boolean,
         default: false
+    },
+    ownSponserId: {
+      type: String,
+      required: true
+    },
+    screenshot: {
+      type: String
+    },
+    referenceNo: {
+      type: String
     }
   },
   {

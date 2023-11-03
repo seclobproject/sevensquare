@@ -1,0 +1,7 @@
+MongoDB:
+Username: seclobclt@gmail.com
+Password: seclob@5959
+
+MongoDB cloud user:
+Username: seclobclt
+Password: JwfsTUhZeEwJKKNi

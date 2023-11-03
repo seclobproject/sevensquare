@@ -1,10 +1,11 @@
 import express from "express";
+import path from "path";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 const app = express();
 
-import userRoutes from './routes/userRoutes.js';
-import packageRoutes from './routes/packageRoutes.js';
+import userRoutes from "./routes/userRoutes.js";
+import packageRoutes from "./routes/packageRoutes.js";
 
 //dotenv
 import dotenv from "dotenv";
@@ -21,9 +22,14 @@ connectDB();
 app.use(express.json());
 app.use(cookieParser());
 
+// Uploads
+const __dirname = path.resolve();
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+// Uploads
+
 // API Points
 app.get("/", (req, res) => {
-  res.status(201).json('Running');
+  res.status(201).json("Running");
 });
 
 app.use("/api/users", userRoutes);
