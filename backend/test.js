@@ -26,7 +26,7 @@ function calculateCommission(userId, amount, level) {
 }
 
 function getCommissionRate(level) {
-  const commissionRates = [25, 18, 14, 10, 7, 4, 2, 1];
+  const commissionRates = [25, 8, 7, 5, 4, 3, 2, 1];
   if (level <= commissionRates.length) {
     return commissionRates[level - 1];
   }
