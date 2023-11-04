@@ -9,6 +9,21 @@ import { protect } from "../middleware/authMiddleware.js";
 import upload from "../middleware/fileUploadMiddleware.js";
 
 // Register new user
+// POST: By admin/sponser
+
+// Function to find the highest unrealised commission and add it to wallet
+function unrealisedToWallet(arr) {
+  if (arr.length === 0) {
+    return 0;
+  }
+
+  const highestNumber = Math.max(...arr);
+  const highestNumbers = arr.filter((num) => num === highestNumber);
+  const sum = highestNumbers.reduce((acc, num) => acc + num, 0);
+
+  return sum;
+}
+
 router.post(
   "/",
   protect,
@@ -23,9 +38,21 @@ router.post(
     const { name, email, phone, address, packageChosen, password, isAdmin } =
       req.body;
 
-    const existingUser = await User.findOne({ email });
+    const screenshot = null;
+    const referenceNo = null;
 
-    if (existingUser) {
+    if (req.body.screenshot && req.body.referenceNo) {
+      screenshot = req.body.screenshot;
+      referenceNo = req.body.referenceNo;
+    }
+
+    const earning = 0;
+    const unrealisedEarning = 0;
+    const children = [];
+    const existingUser = await User.findOne({ email });
+    const existingUserByPhone = await User.findOne({ phone });
+
+    if (existingUser || existingUserByPhone) {
       res.status(400);
       throw new Error("User already exists!");
     }
@@ -40,22 +67,42 @@ router.post(
       password,
       isAdmin,
       ownSponserId,
+      screenshot,
+      referenceNo,
+      earning,
+      unrealisedEarning,
       userStatus,
+      children,
     });
 
     if (user) {
       if (sponserUser) {
         sponserUser.children.push(user._id);
+
+        if (
+          sponserUser.children.length === 2 ||
+          sponserUser.children.length === 3
+        ) {
+          const unrealisedAmount = unrealisedToWallet(sponserUser.unrealisedEarning);
+          sponserUser.earning = sponserUser.earning + unrealisedAmount;
+        }
+
         await sponserUser.save();
 
         res.json({
           _id: user._id,
+          sponser: user.sponser,
           name: user.name,
           email: user.email,
           phone: user.phone,
           address: user.address,
-          sponser: user.sponser,
+          packageChosen: user.packageChosen,
           ownSponserId: user.ownSponserId,
+          screenshot: user.screenshot,
+          referenceNo: user.referenceNo,
+          earning: user.earning,
+          unrealisedEarning: user.unrealisedEarning,
+          children: user.children,
           isAdmin: user.isAdmin,
           isSuperAdmin: user.isSuperAdmin,
           userStatus: user.userStatus,
@@ -93,12 +140,21 @@ router.post(
 
       res.json({
         _id: user._id,
+        sponser: user.sponser,
         name: user.name,
         email: user.email,
         phone: user.phone,
-        sponser: user.sponser,
+        address: user.address,
+        packageChosen: user.packageChosen,
+        isAdmin: user.isAdmin,
+        isSuperAdmin: user.isSuperAdmin,
         ownSponserId: user.ownSponserId,
-        status: user.status,
+        screenshot: user.screenshot,
+        referenceNo: user.referenceNo,
+        earning: user.earning,
+        unrealisedEarning: user.unrealisedEarning,
+        userStatus: user.userStatus,
+        children: user.children,
       });
     } else {
       res.status(401);
@@ -139,7 +195,6 @@ router.post(
   "/verify-user-payment",
   protect,
   asyncHandler(async (req, res) => {
-    
     const sponserUserId = req.user._id;
 
     const { userId } = req.body;
@@ -151,8 +206,6 @@ router.post(
     const theUser = sponseredUsers.children.find((child) =>
       child._id.equals(userId)
     );
-
-    // console.log(theUser);
 
     if (theUser) {
       theUser.userStatus = "approved";
@@ -163,56 +216,6 @@ router.post(
       res.status(401);
       throw new Error("Can't find this user. Please check again!");
     }
-  })
-);
-
-// Split commission after the user verified successfully
-// Only for admin/sponser
-router.post(
-  "/split-commission",
-  protect,
-  asyncHandler(async (req, res) => {
-
-    const sponserUserId = req.user._id;
-
-    const { userId } = req.body;
-
-    const sponseredUsers = await User.findById(sponserUserId).populate({
-      path: "children",
-    });
-
-    const theUser = sponseredUsers.children.find((child) =>
-      child._id.equals(userId)
-    );
-
-
-    // Get the plan/package selected by the user
-    const packageSelected = await theUser.populate({
-      path: "packageChosen",
-    });
-
-    const packageAmount = packageSelected.packageChosen.amount;
-    // Get the plan/package selected by the user
-
-    const commissionRates = [25, 8, 7, 5, 4, 3, 2, 1];
-
-    // function calculateCommissions(amount) {
-    //   const commissions = [];
-    //   for (let level = 0; level < commissionRates.length; level++) {
-    //     const commissionRate = commissionRates[level];
-    //     const commission = (commissionRate / 100) * packageAmount;
-    //     commissions.push({ level, commission });
-    //   }
-    //   return commissions;
-    // }
-
-    // const paidAmount = 1000;
-    // const commissions = calculateCommissions(paidAmount);
-
-    // console.log("Commissions:");
-    // commissions.forEach(({ level, commission }) => {
-    //   console.log(`Level ${level + 1}: ${commission} rupees`);
-    // });
   })
 );
 

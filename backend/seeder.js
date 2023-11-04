@@ -15,8 +15,6 @@ const importData = async () => {
     await User.deleteMany();
     const createdUsers = await User.insertMany(users);
 
-    const sampleUser = createdUsers[0]._id;
-
     console.log("Data imported");
     process.exit();
   } catch (error) {

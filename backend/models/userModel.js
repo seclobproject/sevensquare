@@ -53,9 +53,14 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     earning: {
-      type: String,
+      type: Number,
       default: 0,
     },
+    unrealisedEarning: [
+      {
+        type: Number
+      },
+    ],
     userStatus: {
       type: String,
       enum: ["pending", "approved", "rejected"],
