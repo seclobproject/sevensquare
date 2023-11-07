@@ -12,17 +12,15 @@ import upload from "../middleware/fileUploadMiddleware.js";
 // POST: By admin/sponser
 
 // Function to find the highest unrealised commission and add it to wallet
-function unrealisedToWallet(arr) {
+const unrealisedToWallet = (arr) => {
   if (arr.length === 0) {
     return 0;
   }
-
   const highestNumber = Math.max(...arr);
   const highestNumbers = arr.filter((num) => num === highestNumber);
   const sum = highestNumbers.reduce((acc, num) => acc + num, 0);
-
   return sum;
-}
+};
 
 router.post(
   "/",
@@ -77,14 +75,31 @@ router.post(
 
     if (user) {
       if (sponserUser) {
+
         sponserUser.children.push(user._id);
 
         if (
           sponserUser.children.length === 2 ||
           sponserUser.children.length === 3
         ) {
-          const unrealisedAmount = unrealisedToWallet(sponserUser.unrealisedEarning);
+          
+          const unrealisedAmount = unrealisedToWallet(
+            sponserUser.unrealisedEarning
+          );
+
           sponserUser.earning = sponserUser.earning + unrealisedAmount;
+
+          if (sponserUser.unrealisedEarning.length !== 0) {
+
+            const highestNumber = Math.max(...sponserUser.unrealisedEarning);
+
+            const remainingNumbers = sponserUser.unrealisedEarning.filter(
+              (num) => num !== highestNumber
+            );
+
+            sponserUser.unrealisedEarning.length = 0;
+            sponserUser.unrealisedEarning.push(...remainingNumbers);
+          }
         }
 
         await sponserUser.save();

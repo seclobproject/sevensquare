@@ -20,15 +20,21 @@ const splitCommissions = async (user, amount, levels, percentages) => {
   if (sponser) {
     if (sponser.children.length >= 4) {
       sponser.earning = sponser.earning + commission;
+    } else if (sponser.children.length === 2 && percentages[0] === 8) {
+      sponser.earning = sponser.earning + commission;
+    } else if (sponser.children.length === 3 && percentages[0] === 7) {
+      sponser.earning = sponser.earning + commission;
     } else {
       sponser.unrealisedEarning.push(commission);
-      // sponser.unrealisedEarning = sponser.unrealisedEarning + commission;
     }
+
     await sponser.save();
     splitCommissions(sponser, amount, levels - 1, percentages.slice(1));
   }
 };
 
+// POST: Split commission after the user verified successfully.
+// Only for Super admin.
 router.post(
   "/split-commission",
   protect,
@@ -55,12 +61,12 @@ router.post(
     //NEW
     const percentages = [8, 7, 5, 4, 3, 2, 1];
     //NEW
-    const levels = Math.min(percentages.length, 6);
+    const levels = Math.min(percentages.length, 7);
     const packageAmount = packageSelected.packageChosen.amountExGST;
 
     //NEW
     const sponserCommission = (25 / 100) * packageAmount;
-    sponser.earning = sponserCommission;
+    sponser.earning = sponser.earning + sponserCommission;
     await sponser.save();
 
     splitCommissions(sponser, packageAmount, levels, percentages);
