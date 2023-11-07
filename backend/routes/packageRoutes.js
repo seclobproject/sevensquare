@@ -2,7 +2,7 @@ import express from "express";
 const router = express.Router();
 
 import asyncHandler from "../middleware/asyncHandler.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, superAdmin } from "../middleware/authMiddleware.js";
 
 import Package from "../models/packageModel.js";
 import User from "../models/userModel.js";
@@ -12,6 +12,7 @@ import User from "../models/userModel.js";
 router.post(
   "/add-new-package",
   protect,
+  superAdmin,
   asyncHandler(async (req, res) => {
     // const userId = req.user._id;
 

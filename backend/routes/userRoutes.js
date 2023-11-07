@@ -5,7 +5,7 @@ import Randomstring from "randomstring";
 import asyncHandler from "../middleware/asyncHandler.js";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, superAdmin } from "../middleware/authMiddleware.js";
 import upload from "../middleware/fileUploadMiddleware.js";
 
 // Register new user
@@ -75,31 +75,26 @@ router.post(
 
     if (user) {
       if (sponserUser) {
-
         sponserUser.children.push(user._id);
 
         if (
           sponserUser.children.length === 2 ||
           sponserUser.children.length === 3
         ) {
-          
           const unrealisedAmount = unrealisedToWallet(
             sponserUser.unrealisedEarning
           );
 
           sponserUser.earning = sponserUser.earning + unrealisedAmount;
 
-          if (sponserUser.unrealisedEarning.length !== 0) {
+          const highestNumber = Math.max(...sponserUser.unrealisedEarning);
 
-            const highestNumber = Math.max(...sponserUser.unrealisedEarning);
+          const remainingNumbers = sponserUser.unrealisedEarning.filter(
+            (num) => num !== highestNumber
+          );
 
-            const remainingNumbers = sponserUser.unrealisedEarning.filter(
-              (num) => num !== highestNumber
-            );
+          sponserUser.unrealisedEarning = remainingNumbers;
 
-            sponserUser.unrealisedEarning.length = 0;
-            sponserUser.unrealisedEarning.push(...remainingNumbers);
-          }
         }
 
         await sponserUser.save();
@@ -122,6 +117,7 @@ router.post(
           isSuperAdmin: user.isSuperAdmin,
           userStatus: user.userStatus,
         });
+
       } else {
         res.status(400);
         throw new Error("Some error occured. Make sure you are logged in!");
@@ -238,6 +234,7 @@ router.post(
 router.get(
   "/get-users",
   protect,
+  superAdmin,
   asyncHandler(async (req, res) => {
     const users = await User.find({});
     res.json(users);
