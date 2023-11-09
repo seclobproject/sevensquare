@@ -22,19 +22,32 @@ const unrealisedToWallet = (arr) => {
   return sum;
 };
 
+const giveSalary = async (user) => {
+  if (!user) {
+    return;
+  }
+  const sponser = await User.findById(user.sponser);
+  if (sponser) {
+    sponser.salary = sponser.salary + 14.75;
+  }
+  await sponser.save();
+  giveSalary(sponser);
+};
+
 router.post(
   "/",
   protect,
   asyncHandler(async (req, res) => {
+
     const sponser = req.user._id;
+
     const userStatus = "pending";
 
     const sponserUser = await User.findById(sponser);
 
     const ownSponserId = Randomstring.generate(7);
 
-    const { name, email, phone, address, packageChosen, password, isAdmin } =
-      req.body;
+    const { name, email, phone, address, packageChosen, password, isAdmin } = req.body;
 
     const screenshot = null;
     const referenceNo = null;
@@ -75,7 +88,10 @@ router.post(
 
     if (user) {
       if (sponserUser) {
+
         sponserUser.children.push(user._id);
+
+        giveSalary(sponserUser);
 
         if (
           sponserUser.children.length === 2 ||
@@ -94,7 +110,6 @@ router.post(
           );
 
           sponserUser.unrealisedEarning = remainingNumbers;
-
         }
 
         await sponserUser.save();
@@ -119,13 +134,18 @@ router.post(
         });
 
       } else {
+
         res.status(400);
         throw new Error("Some error occured. Make sure you are logged in!");
+
       }
     } else {
+
       res.status(400);
       throw new Error("Invalid user data");
+
     }
+
   })
 );
 

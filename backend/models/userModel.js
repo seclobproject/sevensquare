@@ -56,6 +56,10 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    salary: {
+      type: Number,
+      default: 0
+    },
     unrealisedEarning: [
       {
         type: Number

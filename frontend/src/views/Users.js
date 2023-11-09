@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "Slice/userSlice";
+
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // react plugin used to create charts
@@ -25,15 +28,18 @@ import {
   UncontrolledTooltip,
 } from "reactstrap";
 
-// core components
-import {
-  chartExample1,
-  chartExample2,
-  chartExample3,
-  chartExample4,
-} from "variables/charts.js";
 
-function Dashboard(props) {
+
+
+function Users(props) {
+  
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [])
+
+
   const [bigChartData, setbigChartData] = React.useState("data1");
   const setBgChartData = (name) => {
     setbigChartData(name);
@@ -47,11 +53,11 @@ function Dashboard(props) {
               <CardHeader>
                 <Row>
                   <Col className="text-left" sm="6">
-                    <h5 className="card-category">Add/Edit new packages</h5>
-                    <CardTitle tag="h2">Packages</CardTitle>
+                    <h5 className="card-category">Add/Edit new users</h5>
+                    <CardTitle tag="h2">Users</CardTitle>
                   </Col>
                   <Col sm="6" className="text-right">
-                    <Button>Add new Package</Button>
+                    <Button>Add new User</Button>
                   </Col>
                 </Row>
               </CardHeader>
@@ -60,38 +66,23 @@ function Dashboard(props) {
                   <thead className="text-primary">
                     <tr>
                       <th>Name</th>
-                      <th>Amount</th>
-                      <th>Amount Ex.GST</th>
-                      <th>Users' Count</th>
-                      <th>Addon Users</th>
-                      <th>Scheme Type</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Package</th>
+                      <th>Status</th>
+                      <th>Options</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td>Doris Greene</td>
-                      <td>1000</td>
-                      <td>10</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>Staff</td>
+                      <td>9876543210</td>
+                      <td>seclobclt@gmail.com</td>
+                      <td>Package 01</td>
+                      <td>Approved</td>
                       <td>
-                        <div>Activate</div><br />
-                        <div>Deactivate</div><br />
-                        <div>Delete</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Doris Greene</td>
-                      <td>1000</td>
-                      <td>10</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>Staff</td>
-                      <td>
-                        <div>Activate</div><br />
-                        <div>Deactivate</div><br />
-                        <div>Delete</div>
+                        <div>Approve</div>
+                        <div>Block</div>
                       </td>
                     </tr>
                   </tbody>
@@ -494,4 +485,4 @@ function Dashboard(props) {
   );
 }
 
-export default Dashboard;
+export default Users;

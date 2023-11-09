@@ -2,27 +2,40 @@ import Dashboard from "views/Dashboard.js";
 import Icons from "views/Icons.js";
 import Map from "views/Map.js";
 import Notifications from "views/Notifications.js";
-import Rtl from "views/Rtl.js";
 import TableList from "views/TableList.js";
 import Typography from "views/Typography.js";
 import UserProfile from "views/UserProfile.js";
+import Users from "views/Users";
+import Wallet from "views/Wallet";
 
 var routes = [
   {
     path: "/dashboard",
-    name: "Dashboard",
-    rtlName: "لوحة القيادة",
+    name: "Packages",
     icon: "tim-icons icon-chart-pie-36",
     component: <Dashboard />,
-    layout: "/admin",
+    layout: "/",
+  },
+  {
+    path: "/users",
+    name: "Users",
+    icon: "tim-icons icon-badge",
+    component: <Users />,
+    layout: "/",
+  },
+  {
+    path: "/wallet",
+    name: "Wallet",
+    icon: "tim-icons icon-coins",
+    component: <Wallet />,
+    layout: "/wallet",
   },
   {
     path: "/icons",
-    name: "Icons",
-    rtlName: "الرموز",
+    name: "Users",
     icon: "tim-icons icon-atom",
     component: <Icons />,
-    layout: "/admin",
+    layout: "/",
   },
   {
     path: "/map",
@@ -30,7 +43,7 @@ var routes = [
     rtlName: "خرائط",
     icon: "tim-icons icon-pin",
     component: <Map />,
-    layout: "/admin",
+    layout: "/",
   },
   {
     path: "/notifications",
@@ -38,7 +51,7 @@ var routes = [
     rtlName: "إخطارات",
     icon: "tim-icons icon-bell-55",
     component: <Notifications />,
-    layout: "/admin",
+    layout: "/",
   },
   {
     path: "/user-profile",
@@ -46,7 +59,7 @@ var routes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "tim-icons icon-single-02",
     component: <UserProfile />,
-    layout: "/admin",
+    layout: "/",
   },
   {
     path: "/tables",
@@ -54,7 +67,7 @@ var routes = [
     rtlName: "قائمة الجدول",
     icon: "tim-icons icon-puzzle-10",
     component: <TableList />,
-    layout: "/admin",
+    layout: "/",
   },
   {
     path: "/typography",
@@ -62,15 +75,7 @@ var routes = [
     rtlName: "طباعة",
     icon: "tim-icons icon-align-center",
     component: <Typography />,
-    layout: "/admin",
-  },
-  {
-    path: "/rtl-support",
-    name: "RTL Support",
-    rtlName: "ار تي ال",
-    icon: "tim-icons icon-world",
-    component: <Rtl />,
-    layout: "/rtl",
+    layout: "/",
   },
 ];
 export default routes;

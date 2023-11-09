@@ -1,25 +1,34 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from 'axios';
+
+//Redux action to get all users
+export const fetchUser = createAsyncThunk("fetchUsers", async() => {
+  const response = await axios.post("/api/users/get-users");
+  return response.json();
+});
 
 const initialState = {
-  users: [],
+  isLoading: false,
+  data: null,
+  isError: false
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-    loginUser: (state, action) => {
-      const user = {
-        loggedUser: action.payload,
-      };
-      state.users.push(user);
-    },
-    logoutUser: (state, action) => {
-      state.users = [];
-    },
+  extraReducers: (builder) => {
+    builder.addCase(fetchUser.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchUser.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.data = action.payload;
+    });
+    builder.addCase(fetchUser.rejected, (state, action) => {
+      console.log("Error", action.payload);
+      state.isError = true;
+    });
   },
 });
-
-export const { loginUser, logoutUser } = userSlice.actions;
 
 export default userSlice.reducer;

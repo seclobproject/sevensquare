@@ -19,12 +19,13 @@ var ps;
 function Admin(props) {
   const location = useLocation();
   const mainPanelRef = React.useRef(null);
+
   const [sidebarOpened, setsidebarOpened] = React.useState(
     document.documentElement.className.indexOf("nav-open") !== -1
   );
+
   React.useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {
-
       document.documentElement.className += " perfect-scrollbar-on";
       document.documentElement.classList.remove("perfect-scrollbar-off");
       ps = new PerfectScrollbar(mainPanelRef.current, {
@@ -34,8 +35,8 @@ function Admin(props) {
       for (let i = 0; i < tables.length; i++) {
         ps = new PerfectScrollbar(tables[i]);
       }
-
     }
+
     // Specify how to clean up after this effect:
     return function cleanup() {
       if (navigator.platform.indexOf("Win") > -1) {
@@ -45,6 +46,7 @@ function Admin(props) {
       }
     };
   });
+
   React.useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {
       let tables = document.querySelectorAll(".table-responsive");
@@ -58,14 +60,16 @@ function Admin(props) {
       mainPanelRef.current.scrollTop = 0;
     }
   }, [location]);
+
   // this function opens and closes the sidebar on small devices
   const toggleSidebar = () => {
     document.documentElement.classList.toggle("nav-open");
     setsidebarOpened(!sidebarOpened);
   };
+
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/") {
         return (
           <Route path={prop.path} element={prop.component} key={key} exact />
         );
@@ -74,6 +78,7 @@ function Admin(props) {
       }
     });
   };
+
   const getBrandText = (path) => {
     for (let i = 0; i < routes.length; i++) {
       if (location.pathname.indexOf(routes[i].layout + routes[i].path) !== -1) {
@@ -90,13 +95,13 @@ function Admin(props) {
             <Sidebar
               routes={routes}
               logo={{
-                outterLink: "https://www.creative-tim.com/",
+                outterLink: "/",
                 text: "7 Square",
                 imgSrc: logo,
               }}
               toggleSidebar={toggleSidebar}
             />
-            
+
             <div className="main-panel" ref={mainPanelRef} data={color}>
               <AdminNavbar
                 brandText={getBrandText(location.pathname)}
@@ -105,18 +110,14 @@ function Admin(props) {
               />
               <Routes>
                 {getRoutes(routes)}
-                <Route
-                  path="/"
-                  element={<Navigate to="/admin/dashboard" replace />}
-                />
+                <Route path="/" element={<Navigate to="/" replace />} />
               </Routes>
-              {
-                // we don't want the Footer to be rendered on map page
+              {/* {
                 location.pathname === "/admin/maps" ? null : <Footer fluid />
-              }
+              } */}
             </div>
           </div>
-          <FixedPlugin bgColor={color} handleBgClick={changeColor} />
+          {/* <FixedPlugin bgColor={color} handleBgClick={changeColor} /> */}
         </React.Fragment>
       )}
     </BackgroundColorContext.Consumer>

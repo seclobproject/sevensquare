@@ -31,6 +31,7 @@ const splitCommissions = async (user, amount, levels, percentages) => {
     await sponser.save();
     splitCommissions(sponser, amount, levels - 1, percentages.slice(1));
   }
+  
 };
 
 // POST: Split commission after the user verified successfully.
