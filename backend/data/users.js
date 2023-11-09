@@ -17,7 +17,8 @@ const users = [
         earning: 0,
         unrealisedEarning: [],
         userStatus: "approved",
-        children: []
+        children: [],
+        unrealisedSalary: 0
     },
 ]
 

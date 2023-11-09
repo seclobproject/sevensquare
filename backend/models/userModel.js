@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    salary: {
+    unrealisedSalary: {
       type: Number,
       default: 0
     },

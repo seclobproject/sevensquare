@@ -22,6 +22,7 @@ const unrealisedToWallet = (arr) => {
   return sum;
 };
 
+// Function to split salary(14.75) to every sponsers
 const giveSalary = async (user) => {
   if (!user) {
     return;
@@ -91,7 +92,7 @@ router.post(
 
         sponserUser.children.push(user._id);
 
-        giveSalary(sponserUser);
+        await giveSalary(sponserUser);
 
         if (
           sponserUser.children.length === 2 ||
