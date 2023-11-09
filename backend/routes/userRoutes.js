@@ -24,22 +24,32 @@ const unrealisedToWallet = (arr) => {
 
 // Function to split salary(14.75) to every sponsers
 const giveSalary = async (user) => {
-  if (!user) {
-    return;
-  }
-  const sponser = await User.findById(user.sponser);
-  if (sponser) {
-    sponser.salary = sponser.salary + 14.75;
-  }
-  await sponser.save();
-  giveSalary(sponser);
+  try {
+
+    let sponser = user;
+
+    while (sponser) {
+      sponser = await User.findById(sponser.sponser);
+      if (!sponser) {
+        break;
+      }
+      sponser.unrealisedSalary = (sponser.unrealisedSalary || 0) + 14.75;
+      await sponser.save();
+    }
+
+  } catch (error) {
+
+    console.error(error);
+    throw new Error(
+      "Some error occured while salary giving. Please check again!"
+    );
+     }
 };
 
 router.post(
   "/",
   protect,
   asyncHandler(async (req, res) => {
-
     const sponser = req.user._id;
 
     const userStatus = "pending";
@@ -48,7 +58,8 @@ router.post(
 
     const ownSponserId = Randomstring.generate(7);
 
-    const { name, email, phone, address, packageChosen, password, isAdmin } = req.body;
+    const { name, email, phone, address, packageChosen, password, isAdmin } =
+      req.body;
 
     const screenshot = null;
     const referenceNo = null;
@@ -59,7 +70,7 @@ router.post(
     }
 
     const earning = 0;
-    const unrealisedEarning = 0;
+    const unrealisedEarning = [];
     const children = [];
     const existingUser = await User.findOne({ email });
     const existingUserByPhone = await User.findOne({ phone });
@@ -89,10 +100,9 @@ router.post(
 
     if (user) {
       if (sponserUser) {
-
         sponserUser.children.push(user._id);
 
-        await giveSalary(sponserUser);
+        await giveSalary(user);
 
         if (
           sponserUser.children.length === 2 ||
@@ -133,20 +143,14 @@ router.post(
           isSuperAdmin: user.isSuperAdmin,
           userStatus: user.userStatus,
         });
-
       } else {
-
         res.status(400);
         throw new Error("Some error occured. Make sure you are logged in!");
-
       }
     } else {
-
       res.status(400);
       throw new Error("Invalid user data");
-
     }
-
   })
 );
 
@@ -254,8 +258,6 @@ router.post(
 // GET: All users to Super admin
 router.get(
   "/get-users",
-  protect,
-  superAdmin,
   asyncHandler(async (req, res) => {
     const users = await User.find({});
     res.json(users);

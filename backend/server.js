@@ -1,8 +1,10 @@
 import express from "express";
 import path from "path";
+import cors from 'cors';
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 const app = express();
+app.use(cors());
 
 import userRoutes from "./routes/userRoutes.js";
 import packageRoutes from "./routes/packageRoutes.js";

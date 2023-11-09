@@ -87,6 +87,7 @@ function Admin(props) {
     }
     return "Brand";
   };
+
   return (
     <BackgroundColorContext.Consumer>
       {({ color, changeColor }) => (

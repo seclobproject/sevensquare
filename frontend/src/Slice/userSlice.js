@@ -3,8 +3,9 @@ import axios from 'axios';
 
 //Redux action to get all users
 export const fetchUser = createAsyncThunk("fetchUsers", async() => {
-  const response = await axios.post("/api/users/get-users");
-  return response.json();
+  const response = await axios.get("/api/users/get-users");
+  // console.log(response.data);
+  return response.data;
 });
 
 const initialState = {
@@ -23,6 +24,7 @@ export const userSlice = createSlice({
     builder.addCase(fetchUser.fulfilled, (state, action) => {
       state.isLoading = false;
       state.data = action.payload;
+      console.log(state.data);
     });
     builder.addCase(fetchUser.rejected, (state, action) => {
       console.log("Error", action.payload);

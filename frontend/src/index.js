@@ -31,11 +31,11 @@ root.render(
               path="*"
               element={<Navigate to="/admin/dashboard" replace />}
             /> */}
-            <Route path="/" element={<AdminLayout />} />
-            {/* <Route
+            <Route path="/*" element={<AdminLayout />} />
+            <Route
               path="*"
               element={<Navigate to="/" replace />}
-            /> */}
+            />
           </Routes>
         </BrowserRouter>
       </BackgroundColorWrapper>
