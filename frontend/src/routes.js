@@ -10,7 +10,7 @@ import Wallet from "views/Wallet";
 
 var routes = [
   {
-    path: "/",
+    path: "/dashboard",
     name: "Packages",
     icon: "tim-icons icon-chart-pie-36",
     component: <Dashboard />,
@@ -28,7 +28,7 @@ var routes = [
     name: "Wallet",
     icon: "tim-icons icon-coins",
     component: <Wallet />,
-    layout: "/wallet",
+    layout: "/",
   },
   {
     path: "/icons",

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "Slice/userSlice";
+import { fetchUsers } from "Slice/userSlice";
 
 // nodejs library that concatenates classes
 import classNames from "classnames";
@@ -28,22 +28,22 @@ import {
   UncontrolledTooltip,
 } from "reactstrap";
 
-
-
-
 function Users(props) {
-  
   const dispatch = useDispatch();
 
+  const { isLoading, data, isError } = useSelector(
+    (state) => state.getUserReducer
+  );
+
   useEffect(() => {
-    dispatch(fetchUser());
-  }, [])
+    dispatch(fetchUsers());
+  }, []);
 
+  // const [bigChartData, setbigChartData] = React.useState("data1");
+  // const setBgChartData = (name) => {
+  //   setbigChartData(name);
+  // };
 
-  const [bigChartData, setbigChartData] = React.useState("data1");
-  const setBgChartData = (name) => {
-    setbigChartData(name);
-  };
   return (
     <>
       <div className="content">
@@ -74,17 +74,39 @@ function Users(props) {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Doris Greene</td>
-                      <td>9876543210</td>
-                      <td>seclobclt@gmail.com</td>
-                      <td>Package 01</td>
-                      <td>Approved</td>
-                      <td>
-                        <div>Approve</div>
-                        <div>Block</div>
-                      </td>
-                    </tr>
+                    {data &&
+                      data.map((user) => (
+                        <tr key={user._id}>
+                          <td>{user.name}</td>
+                          <td>{user.phone}</td>
+                          <td>{user.email}</td>
+                          <td>{user.packageChosen && user.packageChosen.name}</td>
+                          <td>{user.userStatus}</td>
+                          <td>
+                            <div
+                              className="btn mb-2"
+                              style={{
+                                width: "120px",
+                                padding: "8px",
+                                fontSize: "12px",
+                              }}
+                            >
+                              Approve
+                            </div>
+                            <br />
+                            <div
+                              className="btn btn-danger mb-2"
+                              style={{
+                                width: "120px",
+                                padding: "8px",
+                                fontSize: "12px",
+                              }}
+                            >
+                              Block
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </Table>
               </CardBody>

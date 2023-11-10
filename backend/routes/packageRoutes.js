@@ -5,7 +5,21 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import { protect, superAdmin } from "../middleware/authMiddleware.js";
 
 import Package from "../models/packageModel.js";
-import User from "../models/userModel.js";
+
+// GET: All packages
+// Access to all users
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
+    const packages = await Package.find();
+
+    if (packages) {
+      res.json(packages);
+    } else {
+      res.status(404).json({ message: "Packages not found!" });
+    }
+  })
+);
 
 // POST: Create a new package
 // Access only to super admin
@@ -42,10 +56,60 @@ router.post(
     //   await existingPackages.save();
     //   res.status(200).json({ message: "New package added!!!" });
     // } else {
-      // res.status(200).json({ message: "Package added successfully!!!" });
-      // }
-      
-      const addNewPackage = await Package.create({
+    // res.status(200).json({ message: "Package added successfully!!!" });
+    // }
+
+    const addNewPackage = await Package.create({
+      name,
+      amount,
+      amountExGST,
+      usersCount,
+      addOnUsers,
+      schemeType,
+    });
+
+    res.status(200).json({ message: "Package added successfully!!!" });
+  })
+);
+
+// PUT: Edit package
+// Access to superadmin
+router.put(
+  "/edit-package",
+  superAdmin,
+  asyncHandler(async (req, res) => {
+    const {
+      _id,
+      name,
+      amount,
+      amountExGST,
+      usersCount,
+      addOnUsers,
+      schemeType,
+    } = req.body;
+
+    const updatePackage = await Package.findByIdAndUpdate(_id, {
+      name,
+      amount,
+      amountExGST,
+      usersCount,
+      addOnUsers,
+      schemeType,
+    });
+
+    // if (getPackage) {
+    //   getPackage.name = name;
+    //   getPackage.amount = amount;
+    //   getPackage.amountExGST = amountExGST;
+    //   getPackage.usersCount = usersCount;
+    //   getPackage.addOnUsers = addOnUsers;
+    //   getPackage.schemeType = schemeType;
+    // }
+
+    // const updatePackage = await getPackage.save();
+
+    if (updatePackage) {
+      res.status(200).json({
         name,
         amount,
         amountExGST,
@@ -53,9 +117,11 @@ router.post(
         addOnUsers,
         schemeType,
       });
-      
-      res.status(200).json({ message: "Package added successfully!!!" });
-
+    } else {
+      res
+        .status(404)
+        .json({ message: "Some unkwon error occured! Please try again!" });
+    }
   })
 );
 
@@ -75,8 +141,6 @@ router.delete(
         },
       }
     );
-
-    console.log(packageToDelete);
 
     if (packageToDelete.modifiedCount === 1) {
       res.status(200).json({ message: "Package deleted successfully!!!" });

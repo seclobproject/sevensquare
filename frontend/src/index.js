@@ -17,6 +17,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import ThemeContextWrapper from "./components/ThemeWrapper/ThemeWrapper";
 import BackgroundColorWrapper from "./components/BackgroundColorWrapper/BackgroundColorWrapper";
+import Login from "views/Login";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -31,6 +32,7 @@ root.render(
               path="*"
               element={<Navigate to="/admin/dashboard" replace />}
             /> */}
+            <Route path="/" element={<Login />} />
             <Route path="/*" element={<AdminLayout />} />
             <Route
               path="*"

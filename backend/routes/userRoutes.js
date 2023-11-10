@@ -25,7 +25,6 @@ const unrealisedToWallet = (arr) => {
 // Function to split salary(14.75) to every sponsers
 const giveSalary = async (user) => {
   try {
-
     let sponser = user;
 
     while (sponser) {
@@ -36,14 +35,12 @@ const giveSalary = async (user) => {
       sponser.unrealisedSalary = (sponser.unrealisedSalary || 0) + 14.75;
       await sponser.save();
     }
-
   } catch (error) {
-
     console.error(error);
     throw new Error(
       "Some error occured while salary giving. Please check again!"
     );
-     }
+  }
 };
 
 router.post(
@@ -259,7 +256,7 @@ router.post(
 router.get(
   "/get-users",
   asyncHandler(async (req, res) => {
-    const users = await User.find({});
+    const users = await User.find().populate("packageChosen");
     res.json(users);
   })
 );
@@ -273,6 +270,43 @@ router.get(
 
     const users = await User.find({ sponser });
     res.json(users);
+  })
+);
+
+// PUT: Edit user profile
+// Access to admin
+router.put(
+  "/edit-profile",
+  protect,
+  asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    const { name, email, phone, address, password } = req.body;
+
+    const user = await User.findById(userId);
+
+    if(user){
+      user.name = name;
+      user.email = email;
+      user.phone = phone;
+      user.address = address;
+      user.password = password;
+    }
+    const updatedUser = await user.save();
+
+    if (updatedUser) {
+      res.status(200).json({
+        name,
+        email,
+        phone,
+        address,
+      });
+    } else {
+      res
+        .status(404)
+        .json({ message: "Error occured! Please verify you are logged in!" });
+    }
+
   })
 );
 

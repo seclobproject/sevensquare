@@ -1,5 +1,7 @@
-import React from "react";
-// nodejs library that concatenates classes
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "Slice/userSlice";
+
 import classNames from "classnames";
 // react plugin used to create charts
 import { Line, Bar } from "react-chartjs-2";
@@ -46,13 +48,15 @@ function Wallet(props) {
                   <Col className="text-left" sm="6">
                     <CardTitle tag="h2">Wallet</CardTitle>
                   </Col>
-                  <Col sm="6" className="text-right">
-                    <Button>Add new User</Button>
-                  </Col>
                 </Row>
               </CardHeader>
               <CardBody>
-                <Table className="tablesorter" responsive>
+                <Row>
+                  <Col className="text-left" sm="6">
+                    <h4>Amount: </h4>
+                  </Col>
+                </Row>
+                {/* <Table className="tablesorter" responsive>
                   <thead className="text-primary">
                     <tr>
                       <th>Name</th>
@@ -64,6 +68,7 @@ function Wallet(props) {
                     </tr>
                   </thead>
                   <tbody>
+
                     <tr>
                       <td>Doris Greene</td>
                       <td>9876543210</td>
@@ -75,8 +80,9 @@ function Wallet(props) {
                         <div>Block</div>
                       </td>
                     </tr>
+
                   </tbody>
-                </Table>
+                </Table> */}
               </CardBody>
             </Card>
           </Col>

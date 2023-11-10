@@ -1,5 +1,8 @@
-import React from "react";
-// nodejs library that concatenates classes
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { fetchPackage } from "Slice/packageSlice";
+
 import classNames from "classnames";
 // react plugin used to create charts
 import { Line, Bar } from "react-chartjs-2";
@@ -34,10 +37,21 @@ import {
 } from "variables/charts.js";
 
 function Dashboard(props) {
-  const [bigChartData, setbigChartData] = React.useState("data1");
-  const setBgChartData = (name) => {
-    setbigChartData(name);
-  };
+  const dispatch = useDispatch();
+
+  const { isLoading, data, isError } = useSelector(
+    (state) => state.packageReducer
+  );
+
+  useEffect(() => {
+    dispatch(fetchPackage());
+  }, []);
+
+  // const [bigChartData, setbigChartData] = React.useState("data1");
+  // const setBgChartData = (name) => {
+  //   setbigChartData(name);
+  // };
+
   return (
     <>
       <div className="content">
@@ -68,32 +82,22 @@ function Dashboard(props) {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Doris Greene</td>
-                      <td>1000</td>
-                      <td>10</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>Staff</td>
-                      <td>
-                        <div>Activate</div><br />
-                        <div>Deactivate</div><br />
-                        <div>Delete</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Doris Greene</td>
-                      <td>1000</td>
-                      <td>10</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>Staff</td>
-                      <td>
-                        <div>Activate</div><br />
-                        <div>Deactivate</div><br />
-                        <div>Delete</div>
-                      </td>
-                    </tr>
+                    {data &&
+                      data.map((pack) => (
+                        <tr key={pack._id}>
+                          <td>{pack.name}</td>
+                          <td>{pack.amount}</td>
+                          <td>{pack.amountExGST}</td>
+                          <td>{pack.usersCount}</td>
+                          <td>{pack.addOnUsers}</td>
+                          <td>{pack.schemeType}</td>
+                          <td>
+                            <div className="btn mb-2" style={{width: "120px", padding: "8px", fontSize: "12px"}}>Edit</div>
+                            <br />
+                            <div className="btn btn-danger mb-2" style={{width: "120px", padding: "8px", fontSize: "12px"}}>Delete</div>
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </Table>
               </CardBody>
